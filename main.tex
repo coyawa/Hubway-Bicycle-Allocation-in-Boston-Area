@@ -1,0 +1,74 @@
+\documentclass[journal, letterpaper]{IEEEtran}
+\usepackage{listings}
+\usepackage{fancyvrb}
+\usepackage{framed}
+\usepackage[listings,skins]{tcolorbox}
+\usepackage[skipbelow=\topskip,skipabove=\topskip]{mdframed}
+\mdfsetup{roundcorner=0}
+% Congyang: Added the geometry module to add the margin of bottom
+\usepackage[top=1in, bottom=1.2in, left=0.7in, right=0.7in]{geometry}
+% Congyang: Added the indentfirst module (and delele "\\" of every paragraph) to make it indent every paragraph.
+\usepackage{indentfirst}
+
+\begin{document}
+\title{Hubway Bicycle Allocation in Boston Area}
+% Congyang: Title Or: Boston Hubway Bicycle Sharing System Facility Allocation Analysis (choose a fit)
+\author{Congyang Wang, Fangyu Lin, Meng Li \\ Department of Computer Science, Department of Data Science -- Worcester Polytechnic Institute, MA, 01609 \\ Email: \{cwang8, flin, mli6\}@wpi.edu}
+% Congyang: Added our emails
+\maketitle
+
+% The Abstract
+\begin{abstract} 
+\large As the number of people living in Boston grows, the traffic environment has become more and more crowded. In recent years, government has already built up the bicycle system to ameliorate traffic conditions and create a green environment. The idea is to design and implement a bicycle system that is accessible and convenient to the public by planning station locations satisfying the public needs. They can rent a bike from one station and return it at another bike station close to their destinations. However, it is important and challenging for government to arrange bicycle stations appropriately so that the system can benefit almost everyone and balance the traffic flows in Boston as much as possible. Our approach is to arrange bicycle station locations such that maximizes the coverage of the bicycle system and increase penetration of bicycle usage, based on the data from hubway bike data in Boston between 2011 and 2013[cite]. Furthermore, since data of capacity of hubway locations in Boston area is unavailable, we will estimate the capacity of each station with historical data, which contains information on stations and trips on a daily basis. Our goal is to find the best locations in order to improve the traffic flow problem, and green environment in Boston Area. 
+\end{abstract}
+
+% The Keywords 
+\begin{IEEEkeywords}
+Bike-sharing programs;
+Bike-station location;
+Location allocation models;
+\end{IEEEkeywords}
+
+\section{Introduction}
+\large
+The current hubway system is designed mainly for entertainment purpose. However, the bicycle system has far more benefits than just for fun. It even has great potential to solve urban problems of oversized and overpopulated cities, such as traffic congestion and pollution. To exploit the potential of the bicycle system, a new bicycle facility plan has to be designed based on trip demands, regardless of trip purposes. 
+
+We are going to use two datasets: 1. The Boston Hubway 2011 trips and stations dataset; 2. The 2010 Census of Boston dataset. We plan to use the GIS tool to separate the Boston to zoning blocks with the density of population compare with the current hubway(bike) stations locations and the trips history to analysis the new locations for the future hubway stations to make the system more efficiency. 
+
+Basically, we are going to employ a location-allocation model to select stations such that costs between demand locations and candidate stations are minimized or coverage of stations is maximized (García-Palomares, Gutrerrez, Latorre, 2012). The dataset will serve a goal of estimating distribution of potential demands for the location-allocation model. 
+
+According to the "Wisconsin Bicycle Planning Guidance Handbook (WBPG)" (Huber, 2003) [cite this later], it is an important factors that both supply and demand of shared bicycle need to be considered in the shared bicycle facility in Boston Area. So, we decide to use two models: the demand-based model analyze, and supply-based model analyze. 
+
+The Benefits are two: 1. Make the hubway system more efficient, 2. With more stations nearby, encourage more citizens to join the hubway system. Reasonable bicycle facility planning will increase usability of the system and therefore reduce usage of private automobiles and emission of carbon dioxide. Plus, decline of consumption of fossil fuels will help to conserve the non renewable resources. Moreover, traffic congestion will be mitigated if people switch to bicycles from automobiles. For low-income residents, the hubway system will provide them an alternative and healthy commute solution. An efficient bicycle system also is likely to ease mass transit pressures for metropolis. And for education system, college students are more likely to use bicycle for school and shopping in Boston Area. On the one hand, it cost less than subway system. On the other hand, it is faster than subway system, and students are able to do some work out in the morning to wake them up for a starting of a new day. 
+
+The current research paper. One [1] that analyze the bike rental system by using the P-Median (minimize impedance solution), which is to "weighted costs between demand points and solution facilities" in order to maximize coverage. And in those paper, it use the "GIS-based multi-criteria analysis tools". As I know, this is a popular tool for data visualization on a map using heat map and so on. However, the weakness is (I don't know yet). So we are going to implement more advanced method. First to predict the capacity of each bike station by using the data which calculates all the sum of bike that has been use all day during the peak traffic period. Then average the total 365 days for each bike station. However, the challenge is some bike station may not have a good location, so people may use it less than others. Compared with the real capacity so we can make a good decision to allocate bikes to the appropriate new stations and maximize the usage of the bicycles. (Still looking for good methodology) multi-criteria decision analysis, exploratory spatial data analysis 
+
+
+\section{OVERVIEW}
+\large
+
+\section{METHODOLOGY}
+\large
+
+\section{EVALUATION}
+\large
+
+\section{RELATED WORK}
+\large
+
+\section{CONCLUSIONS}
+\large
+
+\begin{thebibliography}{99}
+
+\bibitem{c1} Kim, Dohyung and Nate Baird. 2011. "Bicycle Facility Demand Analysis using GIS: A Los Angeles County Case Study." Accepted for publication in International Journal of Urban and Extraurban Studies. 17pp.
+\bibitem{c2} Juan Carlos García-Palomares*, Javier Gutiérrez, Marta Latorre. "Optimizing the location of stations in bike-sharing programs: A GIS approach"
+\bibitem{c3} Rybarczyk, G., \& Wu, C. (2010). Bicycle facility planning using GIS and multi-criteria decision analysis. Applied Geography, 30(2), 282-293. http://doi.org/10.1016/j.apgeog.2009.08.005
+\bibitem{c4} Frade, I., \& Ribeiro, A. (2014). Bicycle Sharing Systems Demand. Procedia - Social and Behavioral Sciences, 111, 518-527. http://doi.org/10.1016/j.sbspro.2014.01.085
+\bibitem{c5} Baird, N., \& Kim, D. (2011). Bicycle Facility Demand Analysis using GIS. Spaces and Flows: an International Journal of Urban and ExtraUrban Studies, 1(2), 1-14. http://doi.org/10.18848/2154-8676/cgp/v01i02/53782
+ 
+\end{thebibliography}
+
+
+
+\end{document}
