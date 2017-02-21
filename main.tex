@@ -4,6 +4,7 @@
 \usepackage{framed}
 \usepackage[listings,skins]{tcolorbox}
 \usepackage[skipbelow=\topskip,skipabove=\topskip]{mdframed}
+\usepackage{pbox}
 \mdfsetup{roundcorner=0}
 % Congyang: Added the geometry module to add the margin of bottom
 \usepackage[top=1in, bottom=1.2in, left=0.7in, right=0.7in]{geometry}
@@ -31,21 +32,111 @@ Location Optimize model;
 
 \section{Introduction}
 \large
-Sustainable living and energy conservation have been populous across the globe in recent decades since now people are aware of severe damage on environment inflicted by industrialization. To promote renewable energy, a significant number of developed countries launched a shared bicycle program in the hope that it will facilitate people to switch to green transportation. The Hubway is such program launched by Boston government in 2011 with 61 stations and 600 bicycles initially. By the end of 2013, the system has been expanded to 130 stations and 1200 bicycles. However, the current Hubway system is designed mainly for entertainment purpose. Obviously, the bicycle system has far more benefits than just for fun. It even has high potentials to solve urban problems of oversized and overpopulated cities, such as traffic congestion. To explore more potentials, a new bicycle facility plan has to be designed based on trip demands, regardless of trip purposes. As a consequence, the new system will be more efficient and attractive compared to the current one as well as produce more beneficial outcomes. In the first place, reasonable bicycle facility planning will increase the usability of the system and correspondingly reduce usage of private automobiles and emission of carbon dioxide. Plus, the decline in consumption of fossil fuels will help to conserve the non-renewable resources. Secondly, traffic congestion will be mitigated if people switch to bicycles from automobiles. For low-income residents, the Hubway system will provide them an alternative and healthy commute solution. For college students, cycling is also a cost-effective and flexible option which better fits their school schedules compared to the subway. Additionally, an efficient bicycle system is likely to ease mass transit pressures for a metropolis.   
+Sustainable living and energy conservation have been popular across the globe in recent decades since now people are aware of severe damage on environment inflicted by industrialization. To promote renewable energy, a significant number of developed countries launched a shared bicycle program in the hope that it will facilitate people to switch to green transportation. The Hubway is such program launched by Boston government in 2011 with 61 stations and 600 bicycles initially. By the end of 2013, the system has been expanded to 130 stations and 1200 bicycles. However, the current Hubway system is designed mainly for entertainment purpose. Obviously, the bicycle system has far more benefits than just for fun. It even has high potentials to solve urban problems of oversized and overpopulated cities, such as traffic congestion. 
 
-To tackle the problem, we are going to use a dataset of the Boston Hubway 2011 Trips And Stations to determine station locations of the future Hubway system which is supposed to be efficient and meet the public trip demands. 
+To explore more potentials, a new bicycle facility plan has to be designed based on trip demands, regardless of trip purposes. As a consequence, the new system will be more efficient and attractive compared to the current one as well as produce more beneficial outcomes. In the first place, reasonable bicycle facility planning will increase the usability of the system and correspondingly reduce usage of private automobiles and emission of carbon dioxide. Plus, the decline in consumption of fossil fuels will help to conserve the non-renewable resources. Secondly, traffic congestion will be mitigated if people switch to bicycles from automobiles. For low-income residents, the Hubway system will provide them an alternative and healthy commute solution. For college students, cycling is also a cost-effective and flexible option which better fits their school schedules compared to the subway. Additionally, an efficient bicycle system is likely to ease mass transit pressures for a metropolis.   
 
-Basically, we will employ a location-allocation model to select stations such that costs between demand locations and candidate stations are minimized, or coverage of stations is maximized [1]. The dataset will serve a goal of estimating the distribution of potential demands for the location-allocation model.
+To tackle the problem, we are going to use a dataset of the Boston Hubway 2011 Trips And Stations for planning the future Hubway system which is supposed to be efficient and meet the public trip demands. However, the data do not contain GIS information on stations which makes it difficult for us to optimize locations of stations. To simplify the problem, we will concentrate on optimizing bicycle allocation for each station based on estimated trip demands.  
+
+%Basically, we will employ a location-allocation model to select stations such that costs between demand locations and candidate stations are minimized, or coverage of stations is maximized [1]. The dataset will serve a goal of estimating the distribution of potential demands for the location-allocation model.
 
 According to the "Wisconsin Bicycle Planning Guidance Handbook (WBPG)" [2], it is necessary to take both supplies and demands of shared bicycles into consideration in the shared bicycle facility planning. So we decided to perform analysis with two models: the demand-based model and supply-based model.
 
-The research paper we have reviewed currently is the one [3] that analyzes the bike rental system using the P-Median (minimize-impedance solution), which is to minimize "weighted costs between demand points and solution facilities" to maximize coverage. Moreover, in the paper, it uses the "GIS-based multi-criteria analysis tools." As we know, this is a popular tool for data visualization on a map creating a heat map rendering with other features. However, the tool is inadequate and flawed in certain aspects considering our problem. So we are going to apply a more advanced method. To estimate the capacity of each bike station, first, aggregate the number of bicycles rented from one station on a daily basis. Then average the maximum over the total 365 days for each station as the estimated capacity. Regarding accessibility and regional population, some stations will have more bicycles that are rented than others. Based on the estimated needs, we can make a right decision to allocate bikes to stations to maximize overall usage of bicycles. Besides, we are reviewing other methodologies, such as multi-criteria decision analysis and exploratory spatial data analysis. We will make comparisons across them to figure out the best one for our problem and evaluate performance by comparing it with baseline algorithms.
+%The research paper we have reviewed currently is the one [3] that analyzes the bike rental system using the P-Median (minimize-impedance solution), which is to minimize "weighted costs between demand points and solution facilities" to maximize coverage. Moreover, in the paper, it uses the "GIS-based multi-criteria analysis tools." As we know, this is a popular tool for data visualization on a map creating a heat map rendering with other features. However, the tool is inadequate and flawed in certain aspects considering our problem. So we are going to apply a more advanced method. To estimate the capacity of each bike station, first, aggregate the number of bicycles rented from one station on a daily basis. Then select the maximum over daily total from each station as the estimated capacity. Regarding accessibility and regional population, some stations will have more bicycles that are rented than others. Based on the estimated needs, we can make a right decision to allocate bikes to stations to maximize overall usage of bicycles. Besides, we are reviewing other methodologies, such as multi-criteria decision analysis and exploratory spatial data analysis. We will make comparisons across them to figure out the best one for our problem and evaluate performance by comparing it with baseline algorithms.
 \section{OVERVIEW}
 \large
 %aa\\
 \section{METHODOLOGY}
 \large
-%aa\\
+\subsection{Problem Setting}
+Technically, we intend to solve two specific problems:
+\begin{itemize}
+
+\item Predict the number of available bicycles at each station, i.e., the number of bicycles allocated to each station in the very beginning.     
+\item Predict  the individual capacity of each station, namely, the number of docks at each station.
+\end{itemize} 
+Intuitively, the sum of available bicycles at one station and bicycles that has traveled to it should meet the bicycle demands of the station. On the other hand, each station also has to provide sufficient empty docks to accommodate bicycles that have traveled to the station from other stations. Thus, the number of available bicycles and the capacity of each station should be predicted subject to these constraints. 
+
+The prediction consists of two steps. In the first step, bicycle demands and dock demands are predicted per station. In the second step, the entire Boston Area is split into 35 regions by zip codes. Numbers of bikes and docks that will be allocated to each station are estimated based on a demand ratio between the stations in every single region. For example, suppose the region with zip code 02101 has two stations $A$ and $B$. Station $A$ accounts for 20\% bicycle demands of the total regional demands and station $B$ accounts for 80\%. Then 20\% bicycles of the total bicycles in the region will be allocated to the station $A$ and the remaining 80\% bicycles will be allocated to the station $B$.     
+
+To make notations in our methods simple and clear, following terms are defined. 
+
+$Outbound_{s}$: the number of bicycles outbound from the station $s$.
+
+$Inbound_{s}$: the number of inbound bicycles to the station $s$. 
+
+$Avl_{s}$: the number of available bicycles at the station $s$ in the beginning. 
+
+$Capacity_{s}$: the capacity of station $s$, i.e., the total number of docks at the station $s$. 
+
+To simplify the problems and optimize allocation of bicycles and docks with the lowest costs and the least efforts, we made several assumptions.
+
+\begin{itemize}
+\item The total numbers of bicycles and docks of the bike-sharing system are fixed and equal to the totals of the current Hubway system throughout the study.
+\item Given trip data with start time and end time, regional population is assumed to be redundant for trip demand forecasts and will not be considered in the study.
+\end{itemize} 
+\subsection{Bike Demand Prediction for Stations}
+Since demands of bicycles are different from station to station, a strategy that distributes bicycles uniformly across all stations as adopted by most of bike-sharing systems is unreasonable. It may create a surplus of bicycles for stations with low demands and a shortage of bicycles for stations with high demands. To balance bicycle supplies and demands across stations, the number of available bicycles, in theory, should satisfy the equation below,
+$$Avl_{s} + Inbound_{s} \ge Outbound_{s}$$
+
+To cope with a special case where a station has no inbound bicycles, the bike allocation strategy has to guarantee sufficient bike allocation to meet the highest bike demands of the station in practice, i.e.,
+$$Avl_{s} \ge max(Outbound_{s})$$
+\subsection{Capacity Prediction for Stations}
+The dock demand is predicted subject to two constraints:
+\begin{itemize}
+\item Every inbound bicycle is assigned an empty dock at a station.
+\item A station has enough docks to park as many bicycles as demanded when the demands reach the highest level.
+\end{itemize}
+
+$$Capacity_{s} - Avl_{s} = Inbound_{s} - Outbound_{s}$$
+
+The left-hand side of the equation is the number of empty docks, and the right-hand side is the number of bicycles that have to be parked at the station. The rationale behind the equation is that each station must have adequate empty docks so that every bicycle at the station can be parked with a dock. Meanwhile, when a station reaches its full capacity, in other words, no docks are empty, it should satisfy the highest bike demands, i.e., 
+$$Capacity_{s} \ge max(Outbound_{s})$$
+
+In a special case when a station has no outbound bicycles, it should be able to accommodate all inbound bicycles and bicycles that are allocated to the station initially, i.e., 
+$$Capacity_{s} \ge max(Inbound_{s}) + Avl_{s}$$
+\subsection{Estimation of Bike Allocation and Dock Allocation}
+Since capacity and quantity of available bicycles at each station of the current Hubway System are known, and the totals of docks and bikes are assumed unchanging, the regional total of docks and bicycles can be obtained. 
+
+With predicted bike demands and dock demands of individual stations, a demand ratio of bikes and that of docks at a given station $s$ can be calculated respectively as, 
+$$Ratio_{s}^{Bike} = \frac{Predicted \ Avl_{s}}{\sum_{i=1}^{n}Predicted \ Avl_{i}}$$
+$$Ratio_{s}^{Dock} = \frac{Predicted \ Capacity_{s}}{\sum_{i=1}^{n}Predicted \ Capacity_{i}}$$
+where $n$ is the number of stations in the region.
+
+For station $s$, bike allocation and dock allocation should follow
+$$Estimated \ Avl_{s} = Ratio_{s}^{Bike} * \sum_{i=1}^{n}Avl_{i}$$
+$$Estimated \ Capacity_{s} = Ratio_{s}^{Dock} * \sum_{i=1}^{n}Capacity_{i}$$
+where $Avl_{i}$ and $Capacity_{i}$ are data of the current system.
+\subsection{Time Window}
+Prediction results may change when different time horizon is chosen, since daily $max(Inbound_{s})$, weekly $max(Inbound_{s})$ and monthly $max(Inbound_{s})$ probably are not identical. In our analysis, data will be aggregated on a daily basis, a weekly basis, a monthly basis and a yearly basis. Also, comparisons of accuracy of results produced with four horizons will be performed.
+\subsection{Data}
+The analysis is conducted with three datasets: hubway\_stations.csv, hubway\_trips.csv, and the most important and the largest data file, stationstatus.csv. Key attributes are summarized below, 
+\begin{table}[ht]
+%\caption{} % title of Table
+\centering % used for centering table
+\begin{tabular}{c| c| c} % centered columns (4 columns)
+\hline\hline %inserts double horizontal lines
+Attribute & Data Type & Description Of Usage  \\  % inserts table
+%heading
+\hline % inserts single horizontal line
+seq\_id (sid) & Character (Primary key) & trip index, counting trips  \\ % inserting body of the table 
+\hline
+hubway\_id & Character (Reference key) & \pbox{20cm}{Classification for \\ station count sum}  \\
+\hline
+start\_station & Integer & Demand-based counter  \\
+\hline
+end\_station & Integer & Supply-based counter   \\
+\hline
+start\_date & Timestamp & \pbox{20cm}{Classification for \\ day, week, month, year}  \\  % [1ex] adds vertical space
+\hline
+end\_date & Timestamp & \pbox{20cm}{Classification for \\ day, week, month, year} \\
+\hline
+zip\_code & Character & Classification for regions \\
+\hline %inserts single line
+\end{tabular}
+\label{table:nonlin} % is used to refer this table in the text
+\end{table}
+
 \section{EVALUATION}
 \large
 %aa\\
@@ -57,11 +148,11 @@ The research paper we have reviewed currently is the one [3] that analyzes the b
 %\\
 \begin{thebibliography}{99}
 
-\bibitem{c1} J. C. García-Palomares, J. Gutiérrez, and M. Latorre, “Optimizing the location of stations in bike-sharing programs: A GIS approach,” Applied Geography, vol. 35, no. 1, pp. 235-246, 2012.
+\bibitem{c1} J. C. García-Palomares, J. Gutiérrez, and M. Latorre, ?Optimizing the location of stations in bike-sharing programs: A GIS approach,? Applied Geography, vol. 35, no. 1, pp. 235-246, 2012.
 \bibitem{c2} Tom Huber, "WISCONSIN BICYCLE PLANNING GUIDANCE" Unpublished, 2003.
-\bibitem{c3} N. Baird and D. Kim, “Bicycle Facility Demand Analysis using GIS,” Spaces and Flows: An International Journal of Urban and ExtraUrban Studies, vol. 1, no. 2, pp. 1-14, 2011.
-\bibitem{c4} G. Rybarczyk and C. Wu, “Bicycle facility planning using GIS and multi-criteria decision analysis,” Applied Geography, vol. 30, no. 2, pp. 282-293, Apr. 2010.
-\bibitem{c5} I. Frade and A. Ribeiro, “Bicycle Sharing Systems Demand,” Procedia - Social and Behavioral Sciences, vol. 111, pp. 518-527, Feb. 2014.
+\bibitem{c3} N. Baird and D. Kim, ?Bicycle Facility Demand Analysis using GIS,? Spaces and Flows: An International Journal of Urban and ExtraUrban Studies, vol. 1, no. 2, pp. 1-14, 2011.
+\bibitem{c4} G. Rybarczyk and C. Wu, ?Bicycle facility planning using GIS and multi-criteria decision analysis,? Applied Geography, vol. 30, no. 2, pp. 282-293, Apr. 2010.
+\bibitem{c5} I. Frade and A. Ribeiro, ?Bicycle Sharing Systems Demand,? Procedia - Social and Behavioral Sciences, vol. 111, pp. 518-527, Feb. 2014.
  
 \end{thebibliography}
 
