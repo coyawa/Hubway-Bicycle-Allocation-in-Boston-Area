@@ -40,9 +40,11 @@ Sustainable living and energy conservation have been populous across the globe i
 
 To explore more potentials usage of Hubway Shared Bike, a new bicycle facility plan has to be designed based on trip demands, regardless of trip purposes. As a consequence, the new system will be more efficient and attractive compared to the current one as well as produce more beneficial outcomes. In the first place, reasonable bicycle facility planning will increase the usability of the system and correspondingly reduce usage of private automobiles and emission of carbon dioxide. Plus, the decline in consumption of fossil fuels will help to conserve the non-renewable resources. Secondly, traffic congestion will be mitigated if people switch to bicycles from automobiles. For low-income residents, the Hubway system is able to provide them an alternative and healthy commute travel solution. For college students, cycling is also a cost-effective and flexible option which better fits their school schedules compared to the subway. Additionally, an efficient bicycle system is likely to ease mass transit pressures for a metropolis.   
 
-To tackle the problem, we are going to use a dataset of the Boston Hubway 2011 Trips And Stations to predict and optimize the docks for each Hubway station system, which is supposed to be efficient and meet the public trip demands and supplies.
+However, optimizing the entire design, including location planning of stations and re-allocation of docks and bicycles, requires multiple data sources, such as trip records and GIS information, and is way too large for a one-month project. To tailor it to meet workload that we are able to handle in half semester, the problem we are going to address in the paper is simplified to optimize station capacities based on trip demands and current design. In other words, our goal is to modify current design with the least efforts and costs, focusing on re-allocation of docks for stations so that the hubway system can satisfy public demands as much as possible. To tackle the problem, we will use a dataset of the Boston Hubway 2011 Trips And Stations.  
 
-Basically, we will employ a location-allocation model to select stations such that costs between demand locations and candidate stations are minimized, or coverage of stations is maximized [1]. The dataset will serve a goal of estimating the distribution of potential demands for the location-allocation model.
+%To tackle the problem, we are going to use a dataset of the Boston Hubway 2011 Trips And Stations to predict and optimize the docks for each Hubway station system, which is supposed to be efficient and meet the public trip demands and supplies.
+
+%Basically, we will employ a location-allocation model to select stations such that costs between demand locations and candidate stations are minimized, or coverage of stations is maximized [1]. The dataset will serve a goal of estimating the distribution of potential demands for the location-allocation model.
 
 According to the "Wisconsin Bicycle Planning Guidance Handbook (WBPG)" [2], it is necessary to take both supplies and demands of shared bicycles into consideration in the shared bicycle facility planning. In the paper, we proposed our own methodology based on the demands and supplies from the Hubway Bike Trips Data in Boston Area between 2011 and 2013. The rest of paper is organized as follows. Section 2 is the related work in recent year, which talks about what other research projects are doing by using the Hubway Bike Trips Data. Section 3 is going to introduce the Methodology we are proposed, and how can we predict and optimize the docks at each Hubway Stations grouped by Regions. Section 4 Evaluation is going to use the real Hubway Bike Trips data to test our methodology and compare the results with real data. And the last section 5 is the Conclusion for this paper, what we have observed by the Evaluation Experiment results. 
 
@@ -155,18 +157,18 @@ Third, the last datafile that we used has information of docks number. We tract 
 First, group by the station number as well as the start\_date for one table. 
 Second, group by the station number as well as the start end\_date for another table.
 Third, join the two tables with same station number and subtract the end\_date to the start\_date. 
-The result tables contain three attributes are shown as Figure[1]. There are three attributes, which are station\_ID, Date, and the number of bikes need at the station each date. Next, we find the max number of needs for each stations, which means that gets the biggest number through all dates in one station. 
+The result tables contain three attributes are shown as Figure[2]. There are three attributes, which are station\_ID, Date, and the number of bikes need at the station each date. Next, we find the max number of needs for each stations, which means that gets the biggest number through all dates in one station. 
 
 \subsection{Hubway Bikes Re-allocation}
 In this section, we are using the predicted needed bikes in previous section to re-allocate the bike dots for each station. We need another data file "stationstatus.csv" which contains the docks numbers for 145 stations. Second, we join the previous table results by the same primary key and foreign key, which are station\_ID number. 
-First, we are going to do a ratio of each stations in a same group of region, which is group by zip-code. The result table is shown in the figure[2]-[3]. 
+First, we are going to do a ratio of each stations in a same group of region, which is group by zip-code. The result table is shown in the figure[3]-[4]. 
 Second, use methodology to re-allocate each station but the sum of total stations in each region is constant. 
-Third, compare the new docks number in each stations. The final re-allocation results are shown in the figure[4]-[5]. 
-From this graph, we can find out some stations have good dock numbers, but some have to re-allocate to satisfied the requirement of minimum of demands. The final result plots in Figure[6]. 
+Third, compare the new docks number in each stations. The final re-allocation results are shown in the figure[5]-[6]. 
+From this graph, we can find out some stations have good dock numbers, but some have to re-allocate to satisfied the requirement of minimum of demands. The final result plots in Figure[1]. 
 \begin{figure}
   \includegraphics[width=0.5\textwidth]{refl.png}
   \caption{Docks Re-allocation Result Plot}
-  \label{fig:6}
+  \label{fig:1}
 \end{figure}
 %%\section{RELATED WORK}
 %%\large
@@ -182,7 +184,7 @@ The goal of this paper is to predict the shared bikes need, and re-allocate the 
   \includegraphics[width=0.5\textwidth]{all2.png}
   \includegraphics[width=0.5\textwidth]{all3.png}
   \caption{Available Bikes Result Table}
-  \label{fig:1}
+  \label{fig:2}
 \end{figure}
 
 % \begin{figure}
@@ -220,8 +222,8 @@ The goal of this paper is to predict the shared bikes need, and re-allocate the 
 \bibitem{c3} N. Baird and D. Kim, "Bicycle Facility Demand Analysis using GIS," Spaces and Flows: An International Journal of Urban and ExtraUrban Studies, vol. 1, no. 2, pp. 1-14, 2011.
 \bibitem{c4} G. Rybarczyk and C. Wu, "Bicycle facility planning using GIS and multi-criteria decision analysis," Applied Geography, vol. 30, no. 2, pp. 282-293, Apr. 2010.
 \bibitem{c5} I. Frade and A. Ribeiro, "Bicycle Sharing Systems Demand," Procedia - Social and Behavioral Sciences, vol. 111, pp. 518-527, Feb. 2014.
- \bibitem{c6} {WinNT, {{ Bamboo Bicycles Beijing} David Wang}, howpublished = {\url{https://www.bamboobicyclesboston.org/}},{Accessed: 2017-02-20}}
- 
+\bibitem{c6} {WinNT, {{ Bamboo Bicycles Beijing} David Wang}, howpublished = {\url{https://www.bamboobicyclesboston.org/}},{Accessed: 2017-02-20}}
+
 \end{thebibliography}
 
 \end{document}
