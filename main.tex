@@ -9,6 +9,7 @@
 \usepackage{url}
 \usepackage{hyperref}
 \usepackage{caption}
+\linespread{1.2}
 
 \mdfsetup{roundcorner=0}
 % Congyang: Added the geometry module to add the margin of bottom
@@ -41,7 +42,7 @@ Sustainable living and energy conservation have been populous across the globe i
 
 To explore more potentials usage of Hubway Shared Bike, a new bicycle facility plan has to be designed based on trip demands, regardless of trip purposes. As a consequence, the new system will be more efficient and attractive compared to the current one as well as produce more beneficial outcomes. In the first place, reasonable bicycle facility planning will increase the usability of the system and correspondingly reduce usage of private automobiles and emission of carbon dioxide. Plus, the decline in consumption of fossil fuels will help to conserve the non-renewable resources. Secondly, traffic congestion will be mitigated if people switch to bicycles from automobiles. For low-income residents, the Hubway system can provide them an alternative and healthy commute travel solution. For college students, cycling is also a cost-effective and flexible option which better fits their school schedules compared to the subway. Additionally, an efficient bicycle system is likely to ease mass transit pressures for a metropolis.  
 
-However, optimizing the entire design, including location planning of stations and re-allocation of docks and bicycles, requires multiple data sources, such as trip records and GIS information, and is way too large for a one-month project. To tailor it to meet workload that we can handle in half semester, the problem is simplified to optimize station capacities based on trip demands and current design. In other words, our goal is to modify current design with the least efforts and costs, focusing on re-allocation of docks for stations so that the hubway system can satisfy public demands as much as possible. To minimize costs of optimizing the re-allocation of docks, the total number of docks is kept untouched. To tackle the problem, we will use a dataset of the Boston Hubway 2011 Trips And Stations.  Figure[1] shows the Hubways Station in the Boston Area. 
+However, optimizing the entire design, including location planning of stations and re-allocation of docks and bicycles, requires multiple data sources, such as trip records and GIS information, and is way too large for a one-month project. To tailor it to meet workload that we can handle in half semester, the problem is simplified to optimize station capacities based on trip demands and current design. In other words, our goal is to modify current design with the least efforts and costs, focusing on re-allocation of docks for stations so that the Hubway system can satisfy public demands as much as possible. To minimize costs of optimizing the re-allocation of docks, the total number of docks is kept untouched. To tackle the problem, we will use a dataset of the Boston Hubway 2011 Trips And Stations.  Figure[1] shows the Hubway Station in the Boston Area. 
 
 %To tackle the problem, we are going to use a dataset of the Boston Hubway 2011 Trips And Stations to predict and optimize the docks for each Hubway station system, which is supposed to be efficient and meet the public trip demands and supplies.
 
@@ -55,23 +56,23 @@ According to the "Wisconsin Bicycle Planning Guidance Handbook (WBPG)" [2], it i
   \label{fig:1}
 \end{figure}
 
-\section{RELATED WORK}
+\section{Related Work}
 \large
 The research paper we have reviewed currently is the one [3] that analyzes the bike rental system using the P-Median (minimize-impedance solution), which is to minimize "weighted costs between demand points and solution facilities" to maximize coverage. Moreover, in the paper, it uses the "GIS-based multi-criteria analysis tools." As we know, this is a popular tool for data visualization on a map creating a heat map rendering with other features. However, the tool is inadequate and flawed in certain aspects considering our problem. So we are going to apply a more advanced method. To estimate the capacity of each bike station, first, aggregate the number of bicycles rented from one station on a daily basis. Then select the maximum over daily total from each station as the estimated capacity. Regarding accessibility and regional population, some stations will have more bicycles that are rented than others. Based on the estimated needs, we can make a right decision to allocate bikes to stations to maximize overall usage of bicycles. Besides, we are reviewing other methodologies, such as multi-criteria decision analysis and exploratory spatial data analysis. We will make comparisons across them to figure out the best one for our problem and evaluate performance by comparing it with baseline algorithms.
 
-\section{METHODOLOGY}
+\section{Methodology}
 \large
 \subsection{Problem Setting}
 Technically, we intend to estimate the number of docks installed at each station that can satisfy demands of the station. To achieve the goal, we propose a two-step framework:
 \begin{itemize}
 
 \item Step 1: Predict the number of available bicycles at each station, i.e., the number of bicycles allocated to each station in the very beginning, which meets trip demands of the station. 
-\item Step 2: Estimate capacity of each station to accommodate predicted the number of available bicycles, keeping the total number of docks of the entire system unchanged.  
-\end{itemize}  
+\item Step 2: Estimate capacity of each station to accommodate predicted the number of available bicycles, keeping the total number of docks of the entire system unchanged.
+\end{itemize}
 
 Intuitively, the sum of available bicycles at one station and bicycles that have traveled to it should meet the bicycle demands of the station. On the other hand, each station also has to provide sufficient empty docks to accommodate bicycles that have traveled to the station from other stations. Thus, the number of available bicycles and the capacity of each station should be predicted subject to these constraints. 
 
-The two-step framework is essentially developed to create a dock re-allocation plan taking trip demands into consideration. Since the number of docks at each station is estimated by the number of available bicycles which is predicted by trip demands, the station capacity estimates take trip demands into account spontaneously. In the first step, bicycle demands are predicted with inbound and outbound trips. In the second step, the Great Boston Area is split into 35 regions by zipcodes. Docks are assigned to each region first corresponding to its bicycle demands. For example, suppose the city has two regions $A$ and $B$. Region $A$ accounts for 20\% bicycle demands of the total demands and region $B$ accounts for 80\%. Then 20\% docks of the total will be allocated to the region $A$ and the remaining 80\% docks will be allocated to the region $B$. Within each region, docks are allocated to stations following the same procedure.     
+The two-step framework is essentially developed to create a dock re-allocation plan taking trip demands into consideration. Since the number of docks at each station is estimated by the number of available bicycles which is predicted by trip demands, the station capacity estimates take trip demands into account spontaneously. In the first step, bicycle demands are predicted with inbound and outbound trips. In the second step, the Great Boston Area is split into 35 regions by zipcodes. Docks are assigned to each region first corresponding to its bicycle demands. For example, suppose the city has two regions $A$ and $B$. Region $A$ accounts for 20\% bicycle demands of the total demands and region $B$ accounts for 80\%. Then 20\% docks of the total will be allocated to the region $A$ and the remaining 80\% docks will be allocated to the region $B$. Within each region, docks are allocated to stations following the same procedure.  
 
 To make notations in our methods simple and clear, following terms are defined. 
 
@@ -162,37 +163,34 @@ zip\_code & Character & Classification for regions \\
 \label{table:nonlin} % is used to refer this table in the text
 \end{table}
 
-\section{EXPERIMENTS}
+\section{Experiments}
 \large
 %aa\\
 \subsection{Data Preparation}
-First of all, for the data we are using, which is the Hubway bikes shared trip data in Boston. We assume that the user information is not useful in this paper. It is necessary to simplify the data file before doing the data analysis. First, we are going to delete column with attribute 'subs\_ctype', 'zip\_code', 'birth\_data', and 'gender'. Second, load the data into a database for further calculation. 
+First of all, for the data we are using, which is the Hubway bikes shared trip data in Boston. We assume that the user information is not useful in this paper. It is necessary to simplify the data file before doing the data analysis. We are going to remove the column with attribute 'subs\_ctype', 'zip\_code', 'birth\_data', and 'gender'. Load the data file into a database for further calculation and data analysis. 
 
-Second, the other datafile that we are going to use has the Hubway Station information, which contains the removed bike stations. In this case, we assume that removed Hubway station is no longer available, so we use a filter to remove those stations data. 
+Second, the other datafile that we are going to use has the Hubway Station information, which contains the removed bike stations. In this case, we assume that removed Hubway station is no longer available, so we use a filter to remove those stations data before processing. Furthermore, we add the zipcode as another attribute into this Hubway Station location file because we need it to do the region classification. 
 
-Third, the last datafile that we used has information of docks number. We extract a couple of useful columns from this file to do the optimization, which is to group by regions (zipcode) and re-allocate docks for each station in the same region. 
+Third, the last datafile that we used has information of docks number, with the station\_ID and zipcode. We extract a couple of useful columns from this file to do the optimization, which is to group by regions (zipcode) and re-allocate docks for each station in the same region. The detail analysis will show in the subsection (c).
 
 \subsection{Prediction of Available Bikes}
-First, group by the station number as well as the start\_date for one table. 
-Second, group by the station number as well as the start end\_date for another table.
-Third, join the two tables with same station number and subtract the end\_date to the start\_date. 
-The result table has three attributes, which are station\_ID, Date, and the number of bikes needs at the station on each date. Next, we find the max number of needs for each station, which means that gets the biggest number through all dates in one station. The result table plot into graph which is shown in Figure[2].
+In this section, we use the methodology to calculate the available number of bikes at each station. First, group by the station number as well as group by the start\_date for one table. Second, group by the station number as well as the start end\_date for another table. Third, use the methodology function which we have mentioned to join the two tables with same station number and subtract the end\_date to the start\_date. We saw this result as a two level classification. First level is classified by station number. Second level, based on each station, which is classified by date. And the result we got have positive and negative numbers. It is very clear that the positive number represent the leftover bikes on that date at that station. On the other hand, the negative number means the minimum number of bikes available at the docks at the beginning of each data at each station. So, we assume the positive number has enough supplies, we set those positive data to zero. However, for the positive data, we take the absolute value which represent the available bikes at the docks each day at different stations. 
+$$Avl_{s} + Inbound_{s} \ge Outbound_{s}$$
+
+The result table has three attributes, which are station\_ID, Date, and the number of bikes needs at the station on each date. Next, we find the max number of the date available bikes for each station, which means that gets the biggest number through all dates in one station. On the other word, group by station and looking for the maximum number, which is the absolute value from previous data processing. The result histogram  plot table is shown in Figure[2].
 
 \subsection{Hubway Docks Re-allocation}
-In this section, we are using the predicted needed bikes in the previous section to re-allocate the bike dots for each station. We need another data file "stationstatus.csv" which contains the docks numbers for 145 stations. Second, we join the previous table results by the same primary key and foreign key, which are station\_ID number. 
-First, we are going to do a ratio of each station in a same group of the region, which is group by zip-code. The result table is shown in the figure[3]. 
-Second, use the methodology to re-allocate each station, but the sum of total stations in each region is constant. 
-Third, compare the new docks number in each station. The final re-allocation results are ploted in the figure[5]. 
-From this graph, we can find out some stations have good dock numbers, but some have to re-allocate to satisfied the requirement of a minimum of demands. 
+In this section, we are using the predicted available number of bikes in the previous section to re-allocate the bike dots for each station. We import another data file "stationstatus.csv" which contains the docks numbers for 145 stations. Second, we join the previous table results by the same primary key and foreign key, which are station\_ID number. Next, we use the methodology function from the previous section to do a ratio of each station in a same group of the region, which is group by zipcode. The result table is shown in the figure[3]. 
+$$Estimated \ Capacity_{r} = Ratio_{r}^{Bike} * \sum_{i=1}^{n}Capacity_{i}$$
+$$Ratio_{s}^{Bike} = \frac{Predicted \ Avl_{s}}{\sum_{i=1}^{m}Predicted \ Avl_{i}}$$
 
-\subsection{Result Analysis}
-According to the results in each plot, our design matches the real situation in Boston Area. For example, the minimum Docks Required to be added at "TD Garden - Causeway at Portal Park \#1" is at least 33 docks. As it is known that TD Garden is a multi-purpose arena which can be used as a BasketBall Field as well as a ice rink and for other entertainment. Also, it is a commuter rail point, connecting inter-city trains and the subway. As a consequence, trip demands at TD Garden are ought to be high, which is consistent with our optimization results: the minimum 33 docks have to be installed. On the other hand, there are some area has redundant docks which is wasting the resources. For example, the Hubway Station at "Jackson Square T at Centre St" has about 14 empty docks. As we known from the map that this Hubway Bike Station is associated with Subway Station. However, from the result we know that people may not want use the Hubways bikes here becasue it is too close for a walking distance to the activities area. In this case, we plan to re-allocate those 14 docks to other Hubways stations. Those are two extreme results which show the correct re-allocation results from our experiment. The figure[4] shows the Heat Map of Docks Re-allocation Result in Boston Area. As we can see directly from the Map that most docks are re-allocated to Boston Downtown Area. Our goal to optimize Hubway Docks for each Station has been achieved.
+Second, use the methodology to re-allocate each station, but the sum of total stations in each region is constant. Third, compare the new docks number in each station. The final re-allocation results are ployed as histogram and scatters in the figure[5]. The histogram is sorted by the re-allocate docks values, which is from negative to positive. From this graph, we can find out some stations have good dock numbers, but some have to re-allocate to satisfied the requirement of a minimum of demands. 
 
 \begin{figure}
   \includegraphics[width=0.5\textwidth]{resultsheet.jpg}
-  \caption{Hubways Docks Re-allocation Results}
+  \caption{Hubway Docks Re-allocation Results}
   \label{fig:3}
-\end{figure}   
+\end{figure}
 
 \begin{figure}
   \includegraphics[width=0.5\textwidth]{docksheat.jpg}
@@ -204,25 +202,26 @@ According to the results in each plot, our design matches the real situation in 
   \label{fig:4}
 \end{figure}
 
-%%\section{RELATED WORK}
-%%\large
-%aa\\
-
-
 \begin{figure*}
   \includegraphics[width=1\textwidth]{dockvsassigndock.jpg}
   \caption{Docks Re-allocation Result Plot}
   \label{fig:5}
 \end{figure*}
 
-\section{CONCLUSIONS}
+\subsection{Result Analysis}
+According to the results in each plot, our design matches the real situation in Boston Area. For example, the minimum Docks Required to be added at "TD Garden - Causeway at Portal Park \#1" is at least 33 docks. As it is known that TD Garden is a multi-purpose arena which can be used as a Basketball Field as well as a ice rink and for other entertainment. Also, it is a commuter rail point, connecting inter-city trains and the subway. As a consequence, trip demands at TD Garden are ought to be high, which is consistent with our optimization results: the minimum 33 docks have to be installed. On the other hand, there are some area has redundant docks which is wasting the resources. For example, the Hubway Station at "Jackson Square T at Center St" has about 14 empty docks. As we known from the map that this Hubway Bike Station is associated with Subway Station. However, from the result we know that people may not want use the Hubway bikes here because it is too close for a walking distance to the activities area. In this case, we plan to re-allocate those 14 docks to other Hubway stations. Those are two extreme results which show the correct re-allocation results from our experiment. The figure[4] shows the Heat Map of Docks Re-allocation Result in Boston Area. As we can see directly from the Map that most docks are re-allocated to Boston Downtown Area. Our goal to optimize Hubway Docks for each Station has been achieved.
+
+%%\section{RELATED WORK}
+%%\large
+%aa\\
+
+\section{Conclusions}
 \large
 %\\
-The goal of this paper is to predict the shared bikes need and re-allocate the Hubway Docks in each station to satisfied the minimum requirement of the demands for that stations by day. The data we used in the paper is from the Hubway Shared Bikes in Boston from 2011 to 2013.  We develop our Methodology to predict the numbers of bikes in each station needs to satisfied the minimum demand for a day. The evaluation results are shown as expected that many Hubway Docks required re-allocation due to a different ratio between "Needs" and "Docks." For the future work, it may be a good practice to make the Docks motivative. It means that each dock can be installed and uninstalled easily in real practice. Use the real Hubway Shared Bike data in Boston, and we can re-allocate the docks dynamically each Months. And this is also an open challenge to use the real-time bike sharing date to re-allocate the docks for each station dynamically in the future. 
-
+The goal of this paper is to predict the shared bike needs and re-allocate the Hubway Docks in each station to satisfy the minimum requirement of the demands for that stations by day. The data we used in the paper is from the Hubway Shared Bikes in Boston from 2011 to 2013.  We develop our Methodology to predict the numbers of bikes in each station needs to satisfy the minimum demand for a day. The evaluation results are shown as expected that many Hubway Docks required re-allocation due to a different ratio between "Needs" and "Docks." For the future work, it may be a good practice to make the Docks motivative. It means that each dock can be installed and uninstalled easily in real practice. Use the real Hubway Shared Bike data in Boston, and we can re-allocate the docks dynamically each Months. And this is also an open challenge to use the real-time bike sharing date to re-allocate the docks for each station dynamically in the future. It is quite essential to predict trip demands, since station capacity is estimated based on the needs. Trip demands, intuitively, are correlated with demographic factors of residents. Primarily, regional population has direct impacts on trip demands generation, since large population normally suggests high demands. Secondly, private automobile penetration is also related the bicycle demands, because people who own automobiles are less likely to rent bicycles than people without automobiles. Also, since cycling is popular among the young people, regions with a high proportion of the young may demand more bikes compared to other regions. To make effective use of the information, one may apply feature extraction techniques to extract latent features from demographic factors and devise prediction models for future endeavors. However, it is still challenging to translate trip demands to bike demands and finally to station capacity. 
 
 \begin{thebibliography}{99}
-
+\large
 \bibitem{c1} J. C. García-Palomares, J. Gutiérrez, and M. Latorre, "Optimizing the location of stations in bike-sharing programs: A GIS approach," Applied Geography, vol. 35, no. 1, pp. 235-246, 2012.
 \bibitem{c2} Tom Huber, "WISCONSIN BICYCLE PLANNING GUIDANCE" Unpublished, 2003.
 \bibitem{c3} N. Baird and D. Kim, "Bicycle Facility Demand Analysis using GIS," Spaces and Flows: An International Journal of Urban and ExtraUrban Studies, vol. 1, no. 2, pp. 1-14, 2011.
